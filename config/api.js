@@ -37,3 +37,24 @@ export const updateDoctorProfile = async (userId, doctorData) => {
     throw error;
   }
 };
+// Function to log in a user
+export const loginUser = async (loginData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/login`, loginData);
+    return response.data; // Assuming the response contains fields like "success" and "message"
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
+
+// Function to register a user
+export const registerUser = async (registerData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/register`, registerData);
+    return response.data; // Assuming the response contains fields like "success" and "message"
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  }
+};
