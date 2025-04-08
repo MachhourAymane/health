@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { getDoctors } from '../config/api'; // Ensure this API call is correct
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { getDoctors } from '../config/api';
 
 const HomeScreen = ({ navigation }) => {
   const [doctors, setDoctors] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
         const data = await getDoctors();
         setDoctors(data.data);
-        setLoading(false); // Set loading to false when data is fetched
       } catch (error) {
         setError('Error fetching doctors');
-        setLoading(false); // Stop loading in case of an error
         console.error(error);
       }
     };
@@ -26,22 +23,17 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Doctors List</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" /> // Loading spinner
-      ) : error ? (
-        <Text style={styles.error}>{error}</Text>
-      ) : (
-        <FlatList
-          data={doctors}
-          keyExtractor={(item) => item._id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Text>{item.name}</Text>
-              {/* Add other doctor details here */}
-            </View>
-          )}
-        />
-      )}
+      {error && <Text style={styles.error}>{error}</Text>}
+      <FlatList
+        data={doctors}
+        keyExtractor={(item) => item._id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text>{item.name}</Text>
+            {/* Add other doctor details here */}
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -64,7 +56,6 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginTop: 10,
-    textAlign: 'center',
   },
 });
 

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { loginUser } from '../config/api'; // Make sure to check this import
+import { loginUser } from '../config/api';  // Ensure this import is correct
 
 const LoginScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,9 +15,9 @@ const LoginScreen = ({ navigation }) => {
 
     try {
       const loginData = { email, password };
-      const response = await loginUser(loginData);  // Call loginUser correctly
+      const response = await loginUser(loginData);
       if (response.success) {
-        navigation.navigate('Home');
+        navigation.navigate('Home');  // Navigate to Home after successful login
       } else {
         setError(response.message);
       }
@@ -31,25 +29,22 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
         secureTextEntry
         value={password}
-        onChangeText={(text) => setPassword(text)}
+        onChangeText={setPassword}
       />
       <Button title="Login" onPress={handleLogin} />
       {error && <Text style={styles.error}>{error}</Text>}
-      <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
-        CLICK HERE TO REGISTER
-      </Text>
+      <Text onPress={() => navigation.navigate('Register')} style={styles.link}>Don't have an account? Register</Text>
     </View>
   );
 };
@@ -58,20 +53,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 16,
     backgroundColor: '#f8f8f8',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   input: {
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 15,
-    paddingLeft: 10,
+    marginBottom: 10,
+    paddingLeft: 8,
+    borderRadius: 5,
   },
   error: {
     color: 'red',
@@ -79,7 +70,7 @@ const styles = StyleSheet.create({
   },
   link: {
     color: 'blue',
-    marginTop: 20,
+    marginTop: 10,
     textAlign: 'center',
   },
 });
