@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/doctor'; // L'URL de l'API du backend
+const API_URL = 'http://localhost:5000/api/doctor'; 
 
 // Récupérer tous les médecins
 export const getDoctors = async () => {
   try {
-    const response = await axios.get(`${API_URL}/get-all-doctors`);  // Appel GET pour récupérer tous les médecins
+    const response = await axios.get(`${API_URL}/get-all-doctors`);  
     return response.data; // Retourner les données reçues
   } catch (error) {
     console.error('Error fetching doctors', error);

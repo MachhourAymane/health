@@ -15,7 +15,8 @@ const LoginScreen = ({ navigation }) => {
 
     try {
       const loginData = { email, password };
-      const response = await loginUser(loginData);
+      const response = {success: true,message: 'Login successful'}; // Mock response for testing
+      //const response = await loginUser(loginData);
       if (response.success) {
         navigation.navigate('Home');  // Navigate to Home after successful login
       } else {
