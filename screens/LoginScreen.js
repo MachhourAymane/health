@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-import { loginUser } from '../config/api';  // Ensure this import is correct
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, ImageBackground } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -15,10 +14,10 @@ const LoginScreen = ({ navigation }) => {
 
     try {
       const loginData = { email, password };
-      const response = {success: true,message: 'Login successful'}; // Mock response for testing
-      //const response = await loginUser(loginData);
+      const response = { success: true, message: 'Login successful' }; // Mock response for testing
+      // const response = await loginUser(loginData);
       if (response.success) {
-        navigation.navigate('Home');  // Navigate to Home after successful login
+        navigation.navigate('Home'); // Navigate to Home after successful login
       } else {
         setError(response.message);
       }
@@ -29,49 +28,130 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button title="Login" onPress={handleLogin} />
-      {error && <Text style={styles.error}>{error}</Text>}
-      <Text onPress={() => navigation.navigate('Register')} style={styles.link}>Don't have an account? Register</Text>
-    </View>
+    <ImageBackground
+      source="https://media.gettyimages.com/id/1769209056/vector/modern-curve-abstract-background.jpg?s=612x612&w=0&k=20&c=mZ2CQLhJYaCcuSV6t1AhvtKCmiefukGzoGDL4_9o7p8=" // Replace with your gradient image
+      style={styles.background}
+    >
+      <View style={styles.container}>
+        {/* Card Container */}
+        <View style={styles.card}>
+          {/* Logo */}
+          <Image
+            source="https://media.gettyimages.com/id/1266336633/vector/protection-shield.jpg?s=612x612&w=0&k=20&c=CgAQmOK0MfjhASrbF5ARrOyqT2Ff5f4msNyiVh2RaOw=" // Replace with your logo image
+            style={styles.logo}
+          />
+
+          {/* Header */}
+          <Text style={styles.header}>Welcome Back</Text>
+
+          {/* Email Input */}
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+
+          {/* Password Input */}
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          {/* Error Message */}
+          {error && <Text style={styles.error}>{error}</Text>}
+
+          {/* Login Button */}
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          {/* Register Link */}
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.link}>Don't have an account? Register</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
-    backgroundColor: '#f8f8f8',
+    alignItems: 'center',
+  },
+  card: {
+    width: '90%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5, // For Android shadow
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 15,
+    borderRadius: 50, // Optional: Add rounded corners for circular logos
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
+    width: '100%',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 8,
-    borderRadius: 5,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    backgroundColor: '#f9f9f9',
+  },
+  button: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#00679a', // Creative orange-red color
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   error: {
-    color: 'red',
-    marginTop: 10,
+    color: '#e74c3c',
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   link: {
-    color: 'blue',
-    marginTop: 10,
+    color: '#007bff',
+    fontSize: 16,
+    marginTop: 20,
+    textDecorationLine: 'underline',
     textAlign: 'center',
   },
 });
