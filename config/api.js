@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/doctor'; 
+const API_URL_APPT = 'http://localhost:5000/api/appointments';
 
 // Récupérer tous les médecins
 export const getDoctors = async () => {
@@ -58,3 +59,13 @@ export const registerUser = async (registerData) => {
     throw error;
   }
 };
+export const createAppointment = async (appointmentData) => {
+  try {
+    console.log("create appointment ...")
+    const response = await axios.post(`${API_URL_APPT}/book-appointment`, appointmentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating appointment:', error);
+    throw error;
+  }
+    };

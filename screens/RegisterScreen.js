@@ -1,36 +1,43 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
 import { registerUser } from '../config/api'; // Import the registration API function
 
 const RegisterScreen = ({ navigation }) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('patient'); // Default role is "patient"
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state for API call
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      setError('Please enter both email and password');
+    if (!name || !email || !password) {
+      setError('Please fill in all fields');
       return;
     }
 
+    setLoading(true); // Start loading indicator
     try {
-      const registerData = { email, password };
-      const response = { success: true, message: 'Registration successful' }; // Mock response for testing
-      // const response = await registerUser(registerData);
+      const registerData = { name, email, password, role };
+      const response = await registerUser(registerData);
+
       if (response.success) {
-        navigation.navigate('Login'); // Navigate to login after successful registration
+        // Navigate to login screen after successful registration
+        navigation.navigate('Login');
       } else {
-        setError(response.message);
+        setError(response.message || 'Registration failed');
       }
     } catch (err) {
-      console.error('Registration error', err);
-      setError('Error registering user');
+      console.error('Registration error:', err);
+      setError(err.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false); // Stop loading indicator
     }
   };
 
   return (
     <ImageBackground
-      source="https://media.gettyimages.com/id/1769209056/vector/modern-curve-abstract-background.jpg?s=612x612&w=0&k=20&c=mZ2CQLhJYaCcuSV6t1AhvtKCmiefukGzoGDL4_9o7p8=" // Replace with your gradient image
+      source={{ uri: "https://media.gettyimages.com/id/1769209056/vector/modern-curve-abstract-background.jpg?s=612x612&w=0&k=20&c=mZ2CQLhJYaCcuSV6t1AhvtKCmiefukGzoGDL4_9o7p8=" }}
       style={styles.background}
     >
       <View style={styles.container}>
@@ -38,12 +45,21 @@ const RegisterScreen = ({ navigation }) => {
         <View style={styles.card}>
           {/* Logo */}
           <Image
-            source="https://media.gettyimages.com/id/1266336633/vector/protection-shield.jpg?s=612x612&w=0&k=20&c=CgAQmOK0MfjhASrbF5ARrOyqT2Ff5f4msNyiVh2RaOw=" // Replace with your logo image
+            source={{ uri: "https://media.gettyimages.com/id/1266336633/vector/protection-shield.jpg?s=612x612&w=0&k=20&c=CgAQmOK0MfjhASrbF5ARrOyqT2Ff5f4msNyiVh2RaOw=" }}
             style={styles.logo}
           />
 
           {/* Header */}
           <Text style={styles.header}>Create an Account</Text>
+
+          {/* Name Input */}
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="words"
+          />
 
           {/* Email Input */}
           <TextInput
@@ -64,12 +80,37 @@ const RegisterScreen = ({ navigation }) => {
             onChangeText={setPassword}
           />
 
+          {/* Role Selection */}
+          <View style={styles.roleContainer}>
+            <Text style={styles.roleLabel}>Role:</Text>
+            <TouchableOpacity
+              style={[styles.roleButton, role === 'doctor' && styles.roleButtonActive]}
+              onPress={() => setRole('doctor')}
+            >
+              <Text style={[styles.roleButtonText, role === 'doctor' && styles.roleButtonTextActive]}>
+                Doctor
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.roleButton, role === 'patient' && styles.roleButtonActive]}
+              onPress={() => setRole('patient')}
+            >
+              <Text style={[styles.roleButtonText, role === 'patient' && styles.roleButtonTextActive]}>
+                Patient
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Error Message */}
           {error && <Text style={styles.error}>{error}</Text>}
 
           {/* Register Button */}
-          <TouchableOpacity style={styles.button} onPress={handleRegister}>
-            <Text style={styles.buttonText}>Register</Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" /> // Show loading spinner
+            ) : (
+              <Text style={styles.buttonText}>Register</Text>
+            )}
           </TouchableOpacity>
 
           {/* Login Link */}
@@ -109,7 +150,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignSelf: 'center',
     marginBottom: 15,
-    borderRadius: 50, // Optional: Add rounded corners for circular logos
+    borderRadius: 50,
   },
   header: {
     fontSize: 28,
@@ -128,10 +169,37 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#f9f9f9',
   },
+  roleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  roleLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  roleButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+  },
+  roleButtonActive: {
+    backgroundColor: '#00679a',
+  },
+  roleButtonText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  roleButtonTextActive: {
+    color: '#fff',
+  },
   button: {
     width: '100%',
     height: 50,
-    backgroundColor: '#00679a', // Creative orange-red color
+    backgroundColor: '#00679a',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
