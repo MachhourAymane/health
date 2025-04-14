@@ -4,7 +4,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; // Make sure to install expo-vector-icons
 import HomeScreen from '../screens/HomeScreen';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
-import DoctorProfileScreen from '../screens/DoctorProfileScreen';
 import { TouchableOpacity } from 'react-native';
 import BookAppointmentScreen from '../screens/BookAppointmentScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -79,7 +78,6 @@ const TabNavigator = ({navigation,onLogout}) => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Appointements" component={AppointmentStackScreen} />
-      <Tab.Screen name="Patients" component={DoctorProfileScreen} />
       <Tab.Screen name="BookAppointment" component={BookAppointmentScreen} />
       
     </Tab.Navigator>

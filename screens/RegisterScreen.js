@@ -1,192 +1,115 @@
 import React, { useState } from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Image,
-  ImageBackground,
-} from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Use this for newer React Native versions
-import axios from 'axios';
-
+import { View, TextInput, Button, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import { registerUser } from '../config/api';  // Import the registration API function
+import { Ionicons } from '@expo/vector-icons';
 const RegisterScreen = ({ navigation }) => {
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('patient');
   const [error, setError] = useState('');
+  const [userType, setUserType] = useState('patient'); // 'patient' or 'doctor'
+  const [name, setName] = useState('');
 
   const handleRegister = async () => {
-    if (!name || !email || !password) {
-      setError('Please enter name, email, and password');
+    if (!email || !password || !name) {
+      setError('Please enter both email and password');
       return;
     }
 
     try {
-      const registerData = { name, email, password, role };
-      const response = await axios.post('http://localhost:5000/api/user/register', registerData);
-
-      if (response.data.success) {
-        navigation.navigate('Login');
+      const registerData = {name, email, password, role: userType };
+      const response = await registerUser(registerData);
+      if (response.success) {
+        navigation.navigate('Login'); // Navigate to login after successful registration
       } else {
-        setError(response.data.message);
+        setError(response.message);
       }
     } catch (err) {
       console.error('Registration error', err);
-      setError('Error registering');
+      setError('Error registering user');
     }
   };
 
   return (
-    <ImageBackground
-      source={{
-        uri: 'https://media.gettyimages.com/id/1769209056/vector/modern-curve-abstract-background.jpg?s=612x612&w=0&k=20&c=mZ2CQLhJYaCcuSV6t1AhvtKCmiefukGzoGDL4_9o7p8=',
-      }}
-      style={styles.background}
-    >
-      <View style={styles.container}>
-        <View style={styles.card}>
-          <Image
-            source={{
-              uri: 'https://media.gettyimages.com/id/1266336633/vector/protection-shield.jpg?s=612x612&w=0&k=20&c=CgAQmOK0MfjhASrbF5ARrOyqT2Ff5f4msNyiVh2RaOw=',
-            }}
-            style={styles.logo}
-          />
-          <Text style={styles.header}>Create an Account</Text>
+    <View style={styles.container}>
+    <TextInput  // Add name input field
+        style={styles.input}
+        placeholder="Full Name"
+        value={name}
+        onChangeText={setName}
+      />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Full Name"
-            value={name}
-            onChangeText={setName}
-            autoCapitalize="words"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={role}
-              style={styles.picker}
-              onValueChange={(itemValue) => setRole(itemValue)}
-            >
-              <Picker.Item label="Patient" value="patient" />
-              <Picker.Item label="Doctor" value="doctor" />
-            </Picker>
-          </View>
-
-          {error && <Text style={styles.error}>{error}</Text>}
-
-          <TouchableOpacity style={styles.button} onPress={handleRegister}>
-            <Text style={styles.buttonText}>Register</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      {/* Role Selection */}
+      <View style={styles.roleContainer}>
+        <Text style={styles.roleTitle}>Register as:</Text>
+        <View style={styles.checkboxContainer}>
+          <TouchableOpacity 
+            style={styles.checkboxRow}
+            onPress={() => setUserType('patient')}
+          >
+            <Ionicons 
+              name={userType === 'patient' ? 'checkbox' : 'square-outline'} 
+              size={24} 
+              color="#2196F3"
+            />
+            <Text style={styles.checkboxLabel}>Patient</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.link}>Already have an account? Login</Text>
+          <TouchableOpacity 
+            style={styles.checkboxRow}
+            onPress={() => setUserType('doctor')}
+          >
+            <Ionicons 
+              name={userType === 'doctor' ? 'checkbox' : 'square-outline'} 
+              size={24} 
+              color="#2196F3"
+            />
+            <Text style={styles.checkboxLabel}>Doctor</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+
+      <Button title="Register" onPress={handleRegister} />
+      {error && <Text style={styles.error}>{error}</Text>}
+      <Text onPress={() => navigation.navigate('Login')} style={styles.link}>Already have an account? Login</Text>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  card: {
-    width: '90%',
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    marginBottom: 15,
-    borderRadius: 50,
-  },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
+    padding: 16,
+    backgroundColor: '#f8f8f8',
   },
   input: {
-    width: '100%',
-    height: 50,
-    borderColor: '#ddd',
+    height: 40,
+    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    backgroundColor: '#f9f9f9',
-  },
-  pickerContainer: {
-    width: '100%',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 15,
-    backgroundColor: '#f9f9f9',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-  },
-  button: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#00679a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    marginBottom: 10,
+    paddingLeft: 8,
+    borderRadius: 5,
   },
   error: {
-    color: '#e74c3c',
-    fontSize: 14,
-    marginBottom: 10,
-    textAlign: 'center',
+    color: 'red',
+    marginTop: 10,
   },
   link: {
-    color: '#007bff',
-    fontSize: 16,
-    marginTop: 20,
-    textDecorationLine: 'underline',
+    color: 'blue',
+    marginTop: 10,
     textAlign: 'center',
   },
 });

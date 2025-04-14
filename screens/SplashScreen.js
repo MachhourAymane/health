@@ -4,7 +4,7 @@ const SplashScreen = () => {
     return (
       <View style={styles.container}>
         <Image
-          source={require('../assets/logo skeleton.jpg')} // Make sure to add your splash image
+          source={require('../assets/logo_skeleton.png')} // Make sure to add your splash image
           style={styles.logo}
           resizeMode="contain"
         />

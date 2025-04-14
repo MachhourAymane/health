@@ -20,11 +20,14 @@ const LoginScreen = ({ navigation, onLoginSuccess }) => {
     setIsLoading(true); 
     try {
       const loginData = { email, password };
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const response = {success: true,message: 'Login successful', token:'abcdefgh'}; // Mock response for testing
-      //const response = await loginUser(loginData);
+      const response = await loginUser(loginData);
+      //await new Promise(resolve => setTimeout(resolve, 2000));
+      //const response = {success: true,message: 'Login successful', token:'abcdefgh'}; // Mock response for testing
+      
       if (response.success) {
         await AsyncStorage.setItem('userToken', response.token);
+        await AsyncStorage.setItem('userId', response._id);
+        await AsyncStorage.setItem('userName', response.name);
         onLoginSuccess();  // Call the function passed from App.js to update authentication status
       } else {
         setError(response.message);

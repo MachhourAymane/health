@@ -150,8 +150,7 @@ const onTimeChange = (event, selectedTime) => {
         setShowDoctorModal(false);
       }}
     >
-      <Text style={styles.doctorName}>{doctor.firstName}</Text>
-      <Text style={styles.doctorName}>{doctor.lastName}</Text>
+      <Text style={styles.doctorName}>{doctor.name}</Text>
       <Text style={styles.doctorSpeciality}>{doctor.specialization}</Text>
     </TouchableOpacity>
   );
